@@ -45,6 +45,7 @@ def errorCodetoMessage(errorCode):
         return "Error"
 def printTable(origCurrency, prefCurrency, quantity, result):
     isError = False
+    blue = "#4c4cff"
     print "<table>"
     print "<tr>"
     print "<th>Incurrency:</th>"
@@ -55,19 +56,32 @@ def printTable(origCurrency, prefCurrency, quantity, result):
     if isinstance(result, list):
         #This is an error
         isError = True
+        errorMessage = "Invalid currency"
     #IF ERROR MAKE BLUE
-    if isError and result[0] is 1:
+    if (isError and (result[0] is 1)):
         #make 1s5 currency blue
-        print "<mark>"
-        print "<td>",origCurrency, "</td>"
-        print "</mark"
+        print "<td>"
+        print "<span style=\"background-color: ", blue,"\">"
+        print origCurrency
+        print "</span>"
+        print "</td>"
+    else:
+        print "<td>", origCurrency, "</td>"
     #IF ERROR MAKE BLUE
-    #if isError and result[1] is 1:
-        #make 2nd currency blue
-
-    print "<td>", prefCurrency, "</td>"
+    if (isError and (result[1] is 1)):
+        #make 1s5 currency blue
+        print "<td>"
+        print "<span style=\"background-color: ", blue,"\">"
+        print prefCurrency
+        print "</span>"
+        print "</td>"
+    else:
+        print "<td>", prefCurrency, "</td>"
     print "<td>", quantity, "</td>"
-    print "<td>", result, "</td>"
+    if isError:
+        print "<td>", errorMessage, "</td>"
+    else:
+        print "<td>", result, "</td>"
     print "</tr>"
     print "</tr>"
     print "</table>"
@@ -95,13 +109,13 @@ def convert(origCurrency, prefCurrency, quantity):
         return convertedCurrency
     elif ((origCurrency in exchangeFromDollars) and (prefCurrency not in exchangeFromDollars)):
         #ERROR: prefCurrency needs to render blue
-        errorCode.extend(0,1)
+        errorCode.extend([0,1])
     elif (origCurrency not in exchangeFromDollars) and prefCurrency in exchangeFromDollars:
         #ERROR: origCurrency needs to render blue
-        errorCode.extend(1,0)
+        errorCode.extend([1,0])
     else:
         #ERROR: Both need to be blue
-        errorCode.extend(1,1)
+        errorCode.extend([1,1])
     return errorCode     
 
 def lookup(commodity):
