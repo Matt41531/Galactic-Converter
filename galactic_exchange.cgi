@@ -4,7 +4,6 @@ import cgi, cgitb
 
 def main():
     form = cgi.FieldStorage()
-
     Incurrency = form.getvalue('Incurrency')
     Outcurrency = form.getvalue('Outcurrency')
     Amount = form.getvalue('Amount')
@@ -16,20 +15,29 @@ def main():
         Result = convert(Incurrency, Outcurrency, Amount)
         printTable(Incurrency, Outcurrency, Amount, Result)
     else: 
-        errorCode = "Invalid amount"
+        isNone = isNoneAmount(Amount)
+        if isNone:
+            errorCode = "Missing amount"
+        else:
+            errorCode = "Invalid amount"
         printTable(Incurrency, Outcurrency, Amount, errorCode)
     print "</h1>"
     print "</html>"
 
-def validateAmount(Amount): 
-    if Amount is None:    
-        #print "Error: Please specify an amount"
-    elif Amount.isdigit():
+def validateAmount(Amount):
+    if Amount.isdigit():
         #print "DEBUG: Your amount is ", Amount
         return True
     else:
         #print "DEBUG:Error: Invalid amount input"
-    return False
+        return False
+
+def isNoneAmount(Amount):
+    if Amount is None:
+        return True
+    else:
+        return False
+
 
 def printTable(origCurrency, prefCurrency, quantity, result):
     isError = False
@@ -109,5 +117,21 @@ def convert(origCurrency, prefCurrency, quantity):
 
 def lookup(commodity):
     print "Looking..."
+    commodityDict = {
+            "terrangold": [1100.0,1800.0],
+            "terransilver": [13.0,18.0],
+            "terrancopper":[2.0,4.0],
+            "xarngold":[1900.0,2800.0],
+            "xarnsilver":[113.0,158.0],
+            "xarncopper":[0.1,0.2],
+            "corn":[338.25,440.00],
+            "wheat":[438.50,600.40],
+            "coffee":[101.01,1000000.0],
+            "xarnsugar":[191.01,2000.0]
+    }
+
+    if commodity in commodityDict:
+        print "Good job"
+
 
 main()
