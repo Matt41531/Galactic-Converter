@@ -23,26 +23,14 @@ def main():
 
 def validateAmount(Amount): 
     if Amount is None:    
-        print "Error: Please specify an amount"
+        #print "Error: Please specify an amount"
     elif Amount.isdigit():
-        print #"DEBUG: Your amount is ", Amount
+        #print "DEBUG: Your amount is ", Amount
         return True
     else:
-        print "DEBUG:Error: Invalid amount input"
+        #print "DEBUG:Error: Invalid amount input"
     return False
-def errorCodetoMessage(errorCode):
-    codeMessageLookup = {
-            1: "Invalid incurrency",
-            2: "Invalid outcurrency",
-            3: "ERROR 3"
-    }
-    #CHeck if in dict
-    #If not, i dunno
-    #If so, return key
-    if errorCode in codeMessageLookup:
-        return codeMessageLookup[errorCode]
-    else:
-        return "Error"
+
 def printTable(origCurrency, prefCurrency, quantity, result):
     isError = False
     blue = "#4c4cff"
@@ -57,9 +45,9 @@ def printTable(origCurrency, prefCurrency, quantity, result):
         #This is an error
         isError = True
         errorMessage = "Invalid currency"
-    #IF ERROR MAKE BLUE
+    #Check if there was an error for the 1st currency
     if (isError and (result[0] is 1)):
-        #make 1s5 currency blue
+        #make 1st currency blue
         print "<td>"
         print "<span style=\"background-color: ", blue,"\">"
         print origCurrency
@@ -67,9 +55,9 @@ def printTable(origCurrency, prefCurrency, quantity, result):
         print "</td>"
     else:
         print "<td>", origCurrency, "</td>"
-    #IF ERROR MAKE BLUE
+    #Check if there was an error for the 2nd currency
     if (isError and (result[1] is 1)):
-        #make 1s5 currency blue
+        #make 2nd currency blue
         print "<td>"
         print "<span style=\"background-color: ", blue,"\">"
         print prefCurrency
@@ -78,6 +66,7 @@ def printTable(origCurrency, prefCurrency, quantity, result):
     else:
         print "<td>", prefCurrency, "</td>"
     print "<td>", quantity, "</td>"
+    #Print the error message if there was an error
     if isError:
         print "<td>", errorMessage, "</td>"
     else:
@@ -108,13 +97,13 @@ def convert(origCurrency, prefCurrency, quantity):
         errorCode.append(0)
         return convertedCurrency
     elif ((origCurrency in exchangeFromDollars) and (prefCurrency not in exchangeFromDollars)):
-        #ERROR: prefCurrency needs to render blue
+        #Report that the 1st currency is valid but the 2nd is not
         errorCode.extend([0,1])
     elif (origCurrency not in exchangeFromDollars) and prefCurrency in exchangeFromDollars:
-        #ERROR: origCurrency needs to render blue
+        #Report that the 1st currency is invalid but the 2nd currency is valid
         errorCode.extend([1,0])
     else:
-        #ERROR: Both need to be blue
+        #Report that both currencies are invalid
         errorCode.extend([1,1])
     return errorCode     
 
