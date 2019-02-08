@@ -1,16 +1,30 @@
 #!/usr/bin/python
 
 import cgi, cgitb
+class DataEntry:
+    def __init__(self,name,value):
+        self.isValidDict = {
+                "-1": "None",
+                "0": "Valid",
+                "1": "Not valid"
+        }
+        self.name = name
+        self.value = value
+        self.isValid = None
+        self.isValid = self.isValidDict["-1"]
 
 def main():
     form = cgi.FieldStorage()
-    Incurrency = form.getvalue('Incurrency')
-    Outcurrency = form.getvalue('Outcurrency')
-    Amount = form.getvalue('Amount')
-    Commodity = form.getvalue('Commodity')
+    Incurrency = DataEntry("Incurrency",form.getvalue('Incurrency'))
+    Outcurrency = DataEntry("Outcurerncy",form.getvalue('Outcurrency'))
+    Amount = DataEntry("Amount",form.getvalue('Amount'))
+    Commodity = DataEntry("Commodity",form.getvalue('Commodity'))
+    DataValues = [Incurrency, Outcurrency, Amount, Commodity]
     print "Content-type: text/html\n\n"
     print "<html>"
     print "<h1>"
+    validateData(DataValues)
+    print "Amount:", DataValues[2].isValid
     if validateAmount(Amount):
         Result = convert(Incurrency, Outcurrency, Amount)
         printTable(Incurrency, Outcurrency, Amount, Result)
@@ -23,6 +37,19 @@ def main():
         printTable(Incurrency, Outcurrency, Amount, errorCode)
     print "</h1>"
     print "</html>"
+def validateData(dataArray):
+    #Validate inccurency
+
+    #Validate outcurrency
+
+    #Validate amount
+    if dataArray[2].value is None:
+        dataArray[2].isValid = dataArray[2].isValidDict["-1"]
+    elif dataArray[2].value.isdigit():
+        dataArray[2].isValid = dataArray[2].isValidDict["0"]
+    else:
+        dataArray[2].isValid = dataArray[2].isValidDict["1"]
+
 
 def validateAmount(Amount):
     if Amount.isdigit():
