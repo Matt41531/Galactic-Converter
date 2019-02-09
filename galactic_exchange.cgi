@@ -50,22 +50,6 @@ def validateData(dataArray):
     else:
         dataArray[2].isValid = dataArray[2].isValidDict["1"]
 
-
-def validateAmount(Amount):
-    if Amount.isdigit():
-        #print "DEBUG: Your amount is ", Amount
-        return True
-    else:
-        #print "DEBUG:Error: Invalid amount input"
-        return False
-
-def isNoneAmount(Amount):
-    if Amount is None:
-        return True
-    else:
-        return False
-
-
 def printTable(origCurrency, prefCurrency, quantity, result):
     isError = False
     blue = "#4c4cff"
