@@ -1,3 +1,10 @@
+Matthew Rife
+Additional Sources:
+URL:
+Description:
+This is a web project that allows users to convert from one galactic currency to another as well as search for the values of certain galactic commodities at a particular point in time. 
 1.
 2.
-3. The GET method can only get 1024 characters. Not sure if would crash or just cut off digits.
+3. The GET method can only get 1024 characters. When attempting with 10000 digits, there will be an error message that says "Request URI Too Long. The requested URL's length exceeps the capacity limit for this server."
+4.
+5.
