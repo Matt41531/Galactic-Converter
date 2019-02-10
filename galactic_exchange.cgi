@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+#Matthew Rife
 import cgi, cgitb
 from random import uniform
 class DataEntry:
@@ -164,12 +164,10 @@ def lookup(commodity):
         result = None
     return result
     
-
 def simulate(lowerBound, upperBound):
     value = uniform(lowerBound,upperBound)
     return value
 
-        
 def printLookupTable(commodity,**keywordParameters):
     blue = "#4c4cff"
     print "<table>"
@@ -194,11 +192,10 @@ def printLookupTable(commodity,**keywordParameters):
     if ('Result' in keywordParameters):
         print "<td>", keywordParameters['Result'], "</td>"
     else:
-        print "<td> Invalid currency </td>"
+        print "<td> Invalid ccommodity </td>"
     print "</tr>"
     print "</tr>"
     print "</table>"
-
 
 
 main()
