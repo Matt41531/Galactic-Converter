@@ -30,38 +30,35 @@ def main():
     Commodity = DataEntry("Commodity",form.getvalue('Commodity'))
     DataValues = [Incurrency, Outcurrency, Amount]
     isConvert = True
-    if Commodity is not None:
+    if Commodity.value is not None:
         isConvert = False
     print "Content-type: text/html\n\n"
     print "<html>"
     print "<h1>"
-    if isConvert:
+    if isConvert: #User wants to convert one currency to another
         allValid = validateData(DataValues) 
         if allValid:
             answer = convert(DataValues)
-            printTable(DataValues,Result = answer)
+            printConvertTable(DataValues,Result = answer)
         else:
-            printTable(DataValues)
-    else:
-        lookup(Commodity)
+            printConvertTable(DataValues)
+    else: #User wantsto look up a commodity price
+        answer = lookup(Commodity)
+        if answer is not None: #Commodity was valid so answer is valid
+            printLookupTable(Commodity,Result = answer)
+        else: #Commodity was not valid
+            printLookupTable(Commodity)
+
     print "</h1>"
     print "</html>"
 
 def validateData(dataArray):
-    exchangeFromDollars = {
-        "dollar": 1,
-        "euro": .88,
-        "xarn": 26.2,
-        "icekrona": 119.88,
-        "polandzloty": 3.76,
-        "galacticrock": .0123456
-    }
     allValid = True
     #Validate Incurrency
     if dataArray[0].value is None: # if None
         dataArray[0].isValid = dataArray[0].isValidDict["-1"]
         allValid = False
-    elif dataArray[0].value in exchangeFromDollars: #if Valid
+    elif dataArray[0].value in dataArray[0].exchangeFromDollars: #if Valid
         dataArray[0].isValid = dataArray[0].isValidDict["0"]
     else: #if not valid & not none
         dataArray[0].isValid = dataArray[0].isValidDict["1"]
@@ -70,7 +67,7 @@ def validateData(dataArray):
     if dataArray[1].value is None: # if None
         dataArray[1].isValid = dataArray[1].isValidDict["-1"]
         allValid = False
-    elif dataArray[1].value in exchangeFromDollars: #if Valid
+    elif dataArray[1].value in dataArray[1].exchangeFromDollars: #if Valid
         dataArray[1].isValid = dataArray[1].isValidDict["0"]
     else: #if not valid & not none
         dataArray[1].isValid = dataArray[1].isValidDict["1"]
@@ -87,7 +84,7 @@ def validateData(dataArray):
 
     return allValid
     
-def printTable(dataArray, **keywordParameters):
+def printConvertTable(dataArray, **keywordParameters):
     blue = "#4c4cff"
     red = "#dc143c"
     green = "7fff00"
@@ -99,6 +96,7 @@ def printTable(dataArray, **keywordParameters):
     print "<th></th>"
     print "<th>Result:</th>"
     print "<tr>"
+    missingCount = 0
     #Loop through values and print correctly (colored)
     for dataValue in dataArray:
         #DEBUG: print "VALUES:", dataValue.isValid
@@ -119,15 +117,18 @@ def printTable(dataArray, **keywordParameters):
             print "Missing"
             print "</span>"
             print "</td>"
+            missingCount += 1
         else:
             print "<td>", dataValue.value, "</td>"
     #Print the error message if there was an error
     print "<td></td>"
-    if ('Result' in keywordParameters):
+    if ('Result' in keywordParameters): #Result generated, everything is valid
         print "<td>", keywordParameters['Result'], "</td>"
-    elif dataArray[2].isValid is not "Valid":
+    elif missingCount is len(dataArray): #All are none
+        print "<td> Nothing submitted, nothing returned </td>"
+    elif dataArray[2].isValid is not "Valid": #Invalid amount
         print "<td> Invalid amount </td>"
-    else:
+    else: #One of the currencies are invalid
         print "<td> Invalid currency </td>"
     print "</tr>"
     print "</tr>"
@@ -141,8 +142,7 @@ def convert(dataArray):
     convertedCurrency = IncurrencyInDollars * dataArray[1].exchangeFromDollars[Outcurrency]
     return convertedCurrency
 
-def lookup(commodity):
-    print "Looking..."
+def lookup(commodity): 
     commodityDict = {
             "terrangold": [1100.0,1800.0],
             "terransilver": [13.0,18.0],
@@ -156,13 +156,13 @@ def lookup(commodity):
             "xarnsugar":[191.01,2000.0]
     }
     if commodity.value in commodityDict:
-        print "Good job"
         isValid = True
         commodityRange = commodityDict[commodity.value]
         result = simulate(float(commodityRange[0]),float(commodityRange[1]))
-        print "Value: ", result
     else: #Not valid
         commodity.isValid = commodity.isValidDict["1"]
+        result = None
+    return result
     
 
 def simulate(lowerBound, upperBound):
@@ -170,6 +170,35 @@ def simulate(lowerBound, upperBound):
     return value
 
         
+def printLookupTable(commodity,**keywordParameters):
+    blue = "#4c4cff"
+    print "<table>"
+    print "<tr>"
+    print "<th>Commodity:</th>"
+    print "<th></th>"
+    print "<th>Result:</th>"
+    print "<tr>"
+    isCorrect = True
+    if commodity.isValid is "NotValid":
+        #make currency blue
+        print "<td>"
+        print "<span style=\"background-color: ", blue,"\">"
+        print commodity.value
+        print "</span>"
+        print "</td>"
+        isCorrect = False
+    else:
+        print "<td>", commodity.value, "</td>"
+    #Print the error message if there was an error
+    print "<td></td>"
+    if ('Result' in keywordParameters):
+        print "<td>", keywordParameters['Result'], "</td>"
+    else:
+        print "<td> Invalid currency </td>"
+    print "</tr>"
+    print "</tr>"
+    print "</table>"
+
 
 
 main()
