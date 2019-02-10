@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import cgi, cgitb
+from random import uniform
 class DataEntry:
     def __init__(self,name,value):
         self.isValidDict = {
@@ -28,15 +29,21 @@ def main():
     Amount = DataEntry("Amount",form.getvalue('Amount'))
     Commodity = DataEntry("Commodity",form.getvalue('Commodity'))
     DataValues = [Incurrency, Outcurrency, Amount]
+    isConvert = True
+    if Commodity is not None:
+        isConvert = False
     print "Content-type: text/html\n\n"
     print "<html>"
     print "<h1>"
-    allValid = validateData(DataValues) 
-    if allValid:
-        answer = convert(DataValues)
-        printTable(DataValues,Result = answer)
+    if isConvert:
+        allValid = validateData(DataValues) 
+        if allValid:
+            answer = convert(DataValues)
+            printTable(DataValues,Result = answer)
+        else:
+            printTable(DataValues)
     else:
-        printTable(DataValues)
+        lookup(Commodity)
     print "</h1>"
     print "</html>"
 
@@ -148,9 +155,21 @@ def lookup(commodity):
             "coffee":[101.01,1000000.0],
             "xarnsugar":[191.01,2000.0]
     }
-
-    if commodity in commodityDict:
+    if commodity.value in commodityDict:
         print "Good job"
+        isValid = True
+        commodityRange = commodityDict[commodity.value]
+        result = simulate(float(commodityRange[0]),float(commodityRange[1]))
+        print "Value: ", result
+    else: #Not valid
+        commodity.isValid = commodity.isValidDict["1"]
+    
+
+def simulate(lowerBound, upperBound):
+    value = uniform(lowerBound,upperBound)
+    return value
+
+        
 
 
 main()
