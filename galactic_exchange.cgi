@@ -23,34 +23,60 @@ def main():
     print "Content-type: text/html\n\n"
     print "<html>"
     print "<h1>"
-    validateData(DataValues)
-    print "Amount:", DataValues[2].isValid
-    if validateAmount(Amount):
-        Result = convert(Incurrency, Outcurrency, Amount)
-        printTable(Incurrency, Outcurrency, Amount, Result)
-    else: 
-        isNone = isNoneAmount(Amount)
-        if isNone:
-            errorCode = "Missing amount"
-        else:
-            errorCode = "Invalid amount"
-        printTable(Incurrency, Outcurrency, Amount, errorCode)
+    allValid = validateData(DataValues)
+    print "DEBUG: Amount:", DataValues[2].isValid
+    if allValid:
+        Result = convert(DataValues)
+        printTable(DataValues,Result)
+    else:
+        printTable(DataValues)
     print "</h1>"
     print "</html>"
+
 def validateData(dataArray):
-    #Validate inccurency
-
+    exchangeFromDollars = {
+        "dollar": 1,
+        "euro": .88,
+        "xarn": 26.2,
+        "icekrona": 119.88,
+        "polandzloty": 3.76,
+        "galacticrock": .0123456
+    }
+    allValid = True
+    #Validate Incurrency
+    if dataArray[0].value is None: # if None
+        dataArray[0].isValid = dataArray[0].isValidDict["-1"]
+        allValid = False
+    elif dataArray[0].value in exchangeFromDollars: #if Valid
+        dataArray[0].isValid = dataArray[0].isValidDict["0"]
+        validArray[0] = True
+    else: #if not valid & not none
+        dataArray[0].isValid = dataArray[0].isValidDict["1"]
+        allValid = False
     #Validate outcurrency
-
+    if dataArray[1].value is None: # if None
+        dataArray[1].isValid = dataArray[1].isValidDict["-1"]
+        allValid = False
+    elif dataArray[1].value in exchangeFromDollars: #if Valid
+        dataArray[1].isValid = dataArray[1].isValidDict["0"]
+    else: #if not valid & not none
+        dataArray[1].isValid = dataArray[1].isValidDict["1"]
+        allValid = False
     #Validate amount
     if dataArray[2].value is None:
         dataArray[2].isValid = dataArray[2].isValidDict["-1"]
+        allValid = False
     elif dataArray[2].value.isdigit():
         dataArray[2].isValid = dataArray[2].isValidDict["0"]
     else:
         dataArray[2].isValid = dataArray[2].isValidDict["1"]
+        allValid = False
 
-def printTable(origCurrency, prefCurrency, quantity, result):
+    return allValid
+    
+def printTable(dataArray, **keywordParameters):
+    if ('Result' in keywordParameters):
+        print "Found result"
     isError = False
     blue = "#4c4cff"
     print "<table>"
@@ -64,16 +90,21 @@ def printTable(origCurrency, prefCurrency, quantity, result):
         #This is an error
         isError = True
         errorMessage = "Invalid currency"
-    #Check if there was an error for the 1st currency
-    if (isError and (result[0] is 1)):
-        #make 1st currency blue
-        print "<td>"
-        print "<span style=\"background-color: ", blue,"\">"
-        print origCurrency
-        print "</span>"
-        print "</td>"
-    else:
-        print "<td>", origCurrency, "</td>"
+    #DO a for loop here
+    for dataValue in dataArray:
+        if value.isValid is "Not valid":
+            #make currency blue
+            print "<td>"
+            print "<span style=\"background-color: ", blue,"\">"
+            print dataValue.value
+            print "</span>"
+            print "</td>"
+        elif valie.isValid is "None":
+            print "<td>"
+            print "<span style=\"background-color: ", blue,"\">"
+            print dataValue.value
+            print "</span>"
+            print "</td>"
     #Check if there was an error for the 2nd currency
     if (isError and (result[1] is 1)):
         #make 2nd currency blue
@@ -86,45 +117,23 @@ def printTable(origCurrency, prefCurrency, quantity, result):
         print "<td>", prefCurrency, "</td>"
     print "<td>", quantity, "</td>"
     #Print the error message if there was an error
-    if isError:
-        print "<td>", errorMessage, "</td>"
+    if ('Result' in keywordParameters):
+        print "<td>", keywordParameters['Result'], "</td>"
+    elif dataArray[2].isValid is not "Valid":
+        print "<td> Invalid amount </td>"
     else:
-        print "<td>", result, "</td>"
+        print "<td> Invalid currency </td>"
     print "</tr>"
     print "</tr>"
     print "</table>"
 
-def convert(origCurrency, prefCurrency, quantity):
-    print "Converting ", quantity, " ", origCurrency, " to ", prefCurrency
-    exchangeFromDollars = {
-        "dollar": 1,
-        "euro": .88,
-        "xarn": 26.2,
-        "icekrona": 119.88,
-        "polandzloty": 3.76,
-        "galacticrock": .0123456
-    }
-    errorCode = []
-    if origCurrency in exchangeFromDollars and prefCurrency in exchangeFromDollars:
-        #print "DEBUG: 1st currency valid, ", exchangeFromDollars[origCurrency]
-        origCurrencyInDollars =(int(quantity) / exchangeFromDollars[origCurrency]) 
-        #print "DEBUG: Orig: ", origCurrencyInDollars
-        errorCode.append(0)
-        #print "DEBUG:2nd currency valid"
-        convertedCurrency = origCurrencyInDollars * exchangeFromDollars[prefCurrency]
-        #print "DEBUG:Converted currency: ", convertedCurrency
-        errorCode.append(0)
-        return convertedCurrency
-    elif ((origCurrency in exchangeFromDollars) and (prefCurrency not in exchangeFromDollars)):
-        #Report that the 1st currency is valid but the 2nd is not
-        errorCode.extend([0,1])
-    elif (origCurrency not in exchangeFromDollars) and prefCurrency in exchangeFromDollars:
-        #Report that the 1st currency is invalid but the 2nd currency is valid
-        errorCode.extend([1,0])
-    else:
-        #Report that both currencies are invalid
-        errorCode.extend([1,1])
-    return errorCode     
+def convert(dataArray):
+    Incurrency = dataArray[0].value
+    Outcurrency = dataArray[1].value
+    Amount = dataArray[2].value
+    IncurrencyInDollars =(int(Amount) / exchangeFromDollars[Incurrency]) 
+    convertedCurrency = IncurrencyInDollars * exchangeFromDollars[Outcurrency]
+    return convertedCurrency
 
 def lookup(commodity):
     print "Looking..."
