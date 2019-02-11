@@ -37,7 +37,7 @@ def main():
     print "<h1>"
     if isConvert: #User wants to convert one currency to another
         allValid = validateData(DataValues) 
-        if allValid:
+        if allValid: #incurrency, outcurrency, and amount are valid
             answer = convert(DataValues)
             printConvertTable(DataValues,Result = answer)
         else:
@@ -99,9 +99,8 @@ def printConvertTable(dataArray, **keywordParameters):
     missingCount = 0
     #Loop through values and print correctly (colored)
     for dataValue in dataArray:
-        #DEBUG: print "VALUES:", dataValue.isValid
         if dataValue.isValid is "NotValid":
-            #make currency blue
+            #make invalid currency blue or invalid amount green
             print "<td>"
             if dataValue.name is "Amount":
                 invalidColor = green
@@ -111,7 +110,8 @@ def printConvertTable(dataArray, **keywordParameters):
             print dataValue.value
             print "</span>"
             print "</td>"
-        elif dataValue.isValid is "None":
+        elif dataValue.isValid is "None": 
+            #make missing values red
             print "<td>"
             print "<span style=\"background-color: ", red,"\">"
             print "Missing"
@@ -120,7 +120,6 @@ def printConvertTable(dataArray, **keywordParameters):
             missingCount += 1
         else:
             print "<td>", dataValue.value, "</td>"
-    #Print the error message if there was an error
     print "<td></td>"
     if ('Result' in keywordParameters): #Result generated, everything is valid
         print "<td>", keywordParameters['Result'], "</td>"
