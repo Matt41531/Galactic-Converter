@@ -1,5 +1,6 @@
 #!/usr/bin/python
-#Matthew Rife
+#PURPOSE: Convert one galactic currency to another and simulate commodity values when looked up
+#AUTHOR: Matthew Rife
 import cgi, cgitb
 from random import uniform
 class DataEntry:
@@ -51,7 +52,7 @@ def main():
 
     print "</h1>"
     print "</html>"
-
+#PURPOSE:
 def validateData(dataArray):
     allValid = True
     #Validate Incurrency
