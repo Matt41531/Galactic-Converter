@@ -1,10 +1,21 @@
 Matthew Rife
+
 Additional Sources:
-URL:
+W3Schools Python
+StackOverflow
+-for having optional parameters in functions
+-dictionaries within a class in python 
+VisualGit ReadtheDocs for Python naming conventions
+
+URL: www.cs.uky.edu/~mari242/Project1/Exchange.html
+
 Description:
 This is a web project that allows users to convert from one galactic currency to another as well as search for the values of certain galactic commodities at a particular point in time. 
-1.
-2.
-3. The GET method can only get 1024 characters. When attempting with 10000 digits, there will be an error message that says "Request URI Too Long. The requested URL's length exceeps the capacity limit for this server."
-4.
-5.
+
+Questions:
+1. When converting to and from the same currency, the cgi basically just converts the quantity to a float and returns it to the user. It does not have a special case for this. 
+2. curl "www.cs.uky.edu/~mari242/Project1/galactic_exchange.cgi?Incurrency=xarn&Outcurrency=euro&Amount=3" 
+This command produces the raw html prints from the cgi file, given the inputs xarn, euro, and 3. The answer produced was .100763358779. All the HTML tags such as <html>, <h1>, <h3>, <br>, <form>, <table>, <th>, and <td> are visible in the curl.
+3. 100 or 1000 characters in a field would be accepted. However,the GET method can only get 1024 characters. When attempting with 10000 digits, there will be an error message that says "Request URI Too Long. The requested URL's length exceeps the capacity limit for this server."
+4.With 50 currencies added, my cgi file would have 50 extra lines adding the currencies into the current dictionary. Also, 50 more lines would be added to the HTML page in order to tell users which new currencies are supported. In total, 100 lines would be added to the project.
+5. In the cgi file, 100 more lines would be added to add to the commodity dictionary. 100 more lines would be added to the HTML to show users what commodities they can look up, at this point in a table for readability. 
